@@ -8,4 +8,7 @@ router.register('profile', views.UserProfileViewset)
 
 urlpatterns = [
     url(r'', include(router.urls)),
+    url(r'^auth/login/$', views.LoginAPI.as_view()),
+    url(r'^auth/user/$', views.UserAPI.as_view()),
+    url(r'^auth/', include('knox.urls')),
 ]
