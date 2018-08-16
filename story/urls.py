@@ -17,9 +17,18 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url, include
 from django.views.generic import TemplateView
+from rest_framework.routers import DefaultRouter
+from accounts import views as acc_views
+from stories import views as stories_views
+
+
+router = DefaultRouter()
+router.register('profile', acc_views.UserProfileViewset)
+router.register('story', stories_views.StoryViewset)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name="index.html")),
-    url(r'^api/', include('accounts.urls')),
+    url(r'^api/auth/', include('accounts.urls')),
+    url(r'^api/', include(router.urls)),
 ]

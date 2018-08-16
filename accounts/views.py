@@ -24,10 +24,21 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+        try:
+            tokens = AuthToken.objects.filter(user=user.id).delete()
+            token = AuthToken.objects.create(user)
+        except:
+            token = AuthToken.objects.create(user)
         return Response({
             'user': UserSerializer(user, context=self.get_serializer_context()).data,
-            'token': AuthToken.objects.create(user)
+            'token': token
         })
+
+class LogoutAPI(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated,]
+    def get(self, request, *args, **kwargs):
+        AuthToken.objects.filter(user=request.user.id).delete()
+        return Response({'str': 'logged_out'})
 
 class UserAPI(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated,]
